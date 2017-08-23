@@ -1,4 +1,4 @@
-package jsonfeed
+package main
 
 import (
 	"testing"

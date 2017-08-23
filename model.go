@@ -1,4 +1,4 @@
-package jsonfeed
+package main
 
 type Component interface {
 	Accept(visitor Visitor, arguments ...interface{})

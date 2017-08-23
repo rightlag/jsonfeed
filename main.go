@@ -1,23 +1,38 @@
-package jsonfeed
+package main
 
 import (
 	"flag"
-	"fmt"
-)
-
-const (
-	Version string = "0.1.0"
+	"io/ioutil"
+	"log"
 )
 
 var (
-	version string
+	file string
 )
 
 func init() {
-	flag.StringVar(&version, "version", Version, "")
+	flag.StringVar(&file, "file", "", "")
 }
 
 func main() {
 	flag.Parse()
-	fmt.Println(version)
+	if file == "" {
+		log.Fatal("main: argument -file is required")
+	}
+	b, err := ioutil.ReadFile(file)
+	if err != nil {
+		log.Fatal(err)
+	}
+	var parser FeedParser
+	root, err := parser.Parse(b)
+	if err != nil {
+		log.Fatal(err)
+	}
+	visitor := NewValidationVisitor()
+	root.Accept(visitor)
+	if visitor.HasErrors() {
+		for _, err := range visitor.Errors() {
+			log.Println(err)
+		}
+	}
 }

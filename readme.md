@@ -40,36 +40,17 @@ See the JSON Feed Version 1 [Specification](https://jsonfeed.org/version/1) for 
 }
 ```
 
-The following Go code parses and validates any given JSON Feed document. If the JSON document is malformed, an error is thrown.
+The CLI parses and validates any given JSON Feed document. If the JSON document is malformed, an error is thrown.
 
-```go
-package main
+    $ jsonfeed -file /path/to/file
 
-import (
-	"io/ioutil"
-	"log"
-
-	"github.com/rightlag/jsonfeed"
-)
-
-func main() {
-	n, err := ioutil.ReadFile("./feed.json")
-	if err != nil {
-		log.Fatal(err)
-	}
-	var parser jsonfeed.FeedParser
-	root, err := parser.Parse(n)
-	if err != nil {
-		log.Fatal(err)
-	}
-	visitor := jsonfeed.NewValidationVisitor()
-	root.Accept(visitor)
-	if visitor.HasErrors() {
-		for _, err := range visitor.Errors() {
-			log.Println(err)
-		}
-	}
-}
+```
+❯ jsonfeed -file ~/feed.json
+2017/08/22 21:08:19 missing required property `version`
+2017/08/22 21:08:19 missing required property `title`
+2017/08/22 21:08:19 item 1 missing required property `id`
+2017/08/22 21:08:19 item 1 attachment 1 missing required property `url`
+2017/08/22 21:08:19 item 1 attachment 1 missing required property `mime_type`
 ```
 
 ## Testing
